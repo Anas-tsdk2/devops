@@ -1,0 +1,34 @@
+version: "3.9"
+
+services:
+  backend:
+    build: ./quiz-api
+    container_name: quiz-api
+    environment:
+      DATABASE_PATH: /app/instance/database.db
+      FLASK_ENV: production
+      FLASK_DEBUG: "0"
+    volumes:
+      - sqlite_data:/app/instance
+    ports:
+      - "5000:5000"
+    restart: unless-stopped
+    networks:
+      - quiz-net
+
+  frontend:
+    build: ./quiz-ui
+    container_name: quiz-ui
+    ports:
+      - "8080:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
+    networks:
+      - quiz-net
+
+volumes:
+  sqlite_data:
+
+networks:
+  quiz-net:

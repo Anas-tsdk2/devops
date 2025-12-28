@@ -1,0 +1,98 @@
+name: CI
+
+# Déclencheur : Le workflow se lance quand on push sur la branche 'main'
+on:
+  push:
+    branches: [ main ]
+  # Ou quand on fait une Pull Request vers 'main'
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  # Job pour l'API : Build, Test et Push
+  build-and-test-api:
+    runs-on: ubuntu-latest  # Utilise une machine virtuelle Ubuntu
+    steps:
+      # 1. Récupération du code source
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # 2. Installation de Python (version 3.10 pour matcher le Dockerfile)
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      # 3. Installation des dépendances du projet API
+      - name: Install dependencies (quiz-api)
+        working-directory: quiz-api  # On se place dans le dossier de l'API
+        run: |
+          python -m pip install --upgrade pip  # Mise à jour de pip
+          pip install -r requirements.txt      # Installation des libs requises
+
+      # 4. Exécution des tests unitaires
+      - name: Run tests (quiz-api)
+        working-directory: quiz-api
+        run: python -m pytest  # Lance pytest
+
+      # 5. Configuration de Docker Buildx (outil pour construire les images)
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      # 6. Connexion à Docker Hub (nécessaire pour envoyer l'image)
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}  # Récupère le nom d'utilisateur depuis les secrets
+          password: ${{ secrets.DOCKER_PASSWORD }}  # Récupère le mot de passe depuis les secrets
+
+      # 7. Construction et Envoi (Push) de l'image de l'API
+      - name: Build and push quiz-api
+        uses: docker/build-push-action@v5
+        with:
+          context: ./quiz-api         # Dossier contenant le Dockerfile de l'API
+          push: true                  # Active l'envoi vers Docker Hub
+          tags: ${{ secrets.DOCKER_USERNAME }}/quiz-api:latest  # Nom de l'image
+
+  # Job pour l'UI : Build, Test et Push
+  build-ui:
+    runs-on: ubuntu-latest
+    steps:
+      # 1. Récupération du code
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # 2. Installation de Node.js (pour les tests)
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+
+      # 3. Installation des dépendances UI
+      - name: Install dependencies (quiz-ui)
+        working-directory: quiz-ui
+        run: npm install
+
+      # 4. Tests UI
+      - name: Run tests (quiz-ui)
+        working-directory: quiz-ui
+        run: npm run test
+
+      # 5. Configuration de Docker Buildx
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      # 6. Connexion à Docker Hub
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      # 7. Construction et Envoi de l'image de l'UI
+      - name: Build and push quiz-ui
+        uses: docker/build-push-action@v5
+        with:
+          context: ./quiz-ui          # Dossier contenant le Dockerfile de l'UI
+          push: true
+          tags: ${{ secrets.DOCKER_USERNAME }}/quiz-ui:latest
