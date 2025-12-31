@@ -23,10 +23,12 @@ ENV DATABASE_PATH=/app/instance/database.db
 # Copier le code source
 COPY . .
 
+RUN chmod +x entrypoint.sh
+
 EXPOSE 5000
 
 # Informations sur l'image
 LABEL maintainer="assia" version="1.1"
 
-# Démarrer gunicorn
-CMD ["gunicorn", "--bind", "0.0.0.0:5000", "--workers=3", "app:app"]
+# Démarrer via le script d'entrée
+CMD ["./entrypoint.sh"]

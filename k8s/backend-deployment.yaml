@@ -19,8 +19,14 @@ spec:
           ports:
             - containerPort: 5000   # port interne du container Flask/Gunicorn
           env:
-            - name: DATABASE_PATH
-              value: /app/instance/database.db
+            - name: POSTGRES_DB
+              value: quiz
+            - name: POSTGRES_USER
+              value: quiz-user
+            - name: POSTGRES_PASSWORD
+              value: quiz-password
+            - name: POSTGRES_HOST
+              value: db-service
             - name: FLASK_ENV
               value: production
             - name: FLASK_DEBUG

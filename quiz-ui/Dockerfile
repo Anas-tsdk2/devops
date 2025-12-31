@@ -1,9 +1,6 @@
 # Étape 1 : Construction (build) du projet avec Node.js
 FROM node:lts-alpine as build
 
-# Installation de Vue CLI (pour build le projet)
-RUN npm install -g @vue/cli
-
 # Répertoire de travail dans le container
 WORKDIR /app
 
@@ -18,7 +15,8 @@ COPY . .
 
 # Variable d'environnement : adresse de ton API Flask
 # (en local, ton API tourne sur http://localhost:5000)
-ENV VITE_API_URL=http://backend-service:3000
+ARG VITE_API_URL=http://localhost:5000
+ENV VITE_API_URL=${VITE_API_URL}
 
 
 # Build de l'application Vue.js (sortie = /app/dist)

@@ -5,19 +5,37 @@ services:
     build: ./quiz-api
     container_name: quiz-api
     environment:
-      DATABASE_PATH: /app/instance/database.db
+      POSTGRES_DB: quiz
+      POSTGRES_USER: quiz-user
+      POSTGRES_PASSWORD: quiz-password
+      POSTGRES_HOST: database
       FLASK_ENV: production
       FLASK_DEBUG: "0"
-    volumes:
-      - sqlite_data:/app/instance
     ports:
-      - "5000:5000"
+      - "5001:5000"
+    depends_on:
+      - database
     restart: unless-stopped
     networks:
       - quiz-net
 
+  database:
+    image: postgres:15
+    container_name: quiz-db
+    environment:
+      POSTGRES_DB: quiz
+      POSTGRES_USER: quiz-user
+      POSTGRES_PASSWORD: quiz-password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - quiz-net
+
   frontend:
-    build: ./quiz-ui
+    build:
+      context: ./quiz-ui
+      args:
+        VITE_API_URL: http://localhost:5001
     container_name: quiz-ui
     ports:
       - "8080:80"
@@ -28,7 +46,7 @@ services:
       - quiz-net
 
 volumes:
-  sqlite_data:
+  postgres_data:
 
 networks:
   quiz-net:
