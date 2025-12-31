@@ -5,7 +5,8 @@ metadata:
 spec:
   selector:
     app: backend
+  type: NodePort
   ports:
     - port: 3000        # port que le frontend utilise
       targetPort: 5000  # port du container backend
-  type: ClusterIP
+      nodePort: 30000   # accès externe direct
