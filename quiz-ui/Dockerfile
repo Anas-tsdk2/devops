@@ -18,7 +18,8 @@ COPY . .
 
 # Variable d'environnement : adresse de ton API Flask
 # (en local, ton API tourne sur http://localhost:5000)
-ENV VITE_API_URL=http://localhost:5000
+ENV VITE_API_URL=http://backend-service:3000
+
 
 # Build de l'application Vue.js (sortie = /app/dist)
 RUN npm run build

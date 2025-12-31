@@ -11,13 +11,16 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Créer dossier instance (pour la bdd sqlite)
 RUN mkdir -p /app/instance
 
-# Variables d'env
+# Copier la base de données existante dans l'image
+COPY instance/database.db /app/instance/database.db
+
+# Variables d'environnement
 ENV FLASK_ENV=production
 ENV FLASK_DEBUG=0
 ENV FLASK_APP=app.py
 ENV DATABASE_PATH=/app/instance/database.db
 
-# Copier le code
+# Copier le code source
 COPY . .
 
 EXPOSE 5000
