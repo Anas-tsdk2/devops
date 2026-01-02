@@ -1,34 +1,26 @@
-name: CD
+name: CD - Kubernetes (Kind)
 
 on:
-  workflow_run:
-    workflows: ["CI"]
-    types:
-      - completed
+  push:
+    branches: [ main ]
 
 jobs:
   deploy:
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
 
     steps:
-    # 1. Récupération du code
-    - name: Checkout repository
-      uses: actions/checkout@v4
+      - uses: actions/checkout@v3
 
-    # 2. Installer kubectl
-    - name: Install kubectl
-      uses: azure/setup-kubectl@v4
-      with:
-        version: v1.29.0
+      - name: Install kubectl
+        run: |
+          curl -LO https://dl.k8s.io/release/v1.29.0/bin/linux/amd64/kubectl
+          chmod +x kubectl
+          sudo mv kubectl /usr/local/bin/
 
-    # 3. Configurer l'accès au cluster Kubernetes
-    - name: Configure kubeconfig
-      run: |
-        mkdir -p ~/.kube
-        echo "${{ secrets.KUBE_CONFIG }}" > ~/.kube/config
+      - name: Create Kind cluster
+        uses: helm/kind-action@v1.9.0
 
-    # 4. Déployer sur Kubernetes
-    - name: Deploy to Kubernetes
-      run: |
-        kubectl apply -f k8s/ --validate=false
+      - name: Deploy manifests
+        run: |
+          kubectl apply -f k8s/
+          kubectl get pods
