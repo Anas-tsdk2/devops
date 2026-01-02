@@ -44,3 +44,4 @@ Pour la phase 2 du projet **Quiz API / Quiz UI**, j’ai réalisé les étapes s
 - Tous les tests unitaires et d’intégration passent localement.
 - CI GitHub Actions fonctionne correctement avec installation des dépendances et exécution des tests.
 - L’API est maintenant dockerisée et prête pour déploiement, avec tests automatisés garantissant la stabilité à chaque modification.
+test
