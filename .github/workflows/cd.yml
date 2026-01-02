@@ -29,8 +29,6 @@ jobs:
         echo "${{ secrets.KUBE_CONFIG }}" > ~/.kube/config
 
     # 4. Déployer sur Kubernetes
-    - name: Deploy application
+    - name: Deploy to Kubernetes
       run: |
-        kubectl apply -f k8s/
-        kubectl rollout restart deployment frontend
-        kubectl rollout restart deployment backend
+        kubectl apply -f k8s/ --validate=false
