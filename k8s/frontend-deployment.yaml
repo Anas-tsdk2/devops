@@ -15,6 +15,6 @@ spec:
       containers:
         - name: frontend
           image: quiz-ui:latest       # image locale construite dans Minikube
-          imagePullPolicy: Never
+          imagePullPolicy: Always
           ports:
             - containerPort: 80
