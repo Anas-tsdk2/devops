@@ -113,7 +113,7 @@ Un **Helm Chart** simple a été mis en place pour faciliter le déploiement et 
 Le pipeline CI existant a été étendu pour inclure la livraison continue. Chaque merge sur la branche principale déclenche automatiquement :
 
 1. L’exécution des tests unitaires et d’intégration.  
-2. Le déploiement sur le cluster Kubernetes via `kubectl apply` ou `helm upgrade`.
+2. Le déploiement sur le cluster Kubernetes via `kubectl apply k8s/` : On a choisi un déploiement en local avec Minikube
 
 Seules les modifications validées par les tests sont déployées, assurant la stabilité du cluster.
 
