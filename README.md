@@ -1,7 +1,55 @@
 # quiz-app
 
-
 ![CI](https://github.com/InesR91/projet-devops/actions/workflows/ci.yml/badge.svg)
+
+# Phase 1 –  Initialisation et déploiement de l’application
+
+##  Installer et configurer Minikube en local
+J'ai suivi la [documentation](https://minikube.sigs.k8s.io/docs/start/?arch=%2Fwindows%2Fx86-64%2Fstable%2F.exe+download) présente sur le site de minikube.
+
+##  Créer un simple backend (API REST, par exemple) et un frontend minimal.
+L'application de quiz composée d’un frontend Vue.js, d’un backend Flask et d’une base de données SQLite, entièrement dockerisée.
+
+#### __L'architecture du projet__ :
+```quiz-app/
+├── quiz-api/    # Backend Flask
+├── quiz-ui/     # Frontend Vue.js
+└── docker-compose.yml
+```
+
+## Conteneuriser ces deux composants (Dockerfiles) :
+
+#### __Dockerisation__ :
+__Backend__ :
+* Image basée sur python:3.10-alpine
+* Serveur Flask lancé avec Gunicorn
+* Base de données SQLite stockée dans un volume Docker afin d’assurer la persistance des données
+* Utilisation de variables d’environnement pour configurer le chemin de la base de données
+
+__Frontend__ :
+
+* Build du projet Vue.js avec Node.js
+* Application servie en production via Nginx
+* Communication avec l’API Flask via le réseau Docker
+
+## Déployer la base de données (conteneur local ou service managé).
+
+_À la racine du projet :_
+```
+docker-compose build
+docker-compose up
+```
+
+_Accès à l’application :_
+
+Frontend : http://localhost:8080
+Backend API : http://localhost:5000
+
+_Sécurité :_
+
+* Authentification via JWT
+* Certaines routes sont protégées par un token d’authentification
+* Mot de passe admin configurable via variable d’environnement
 
 # Phase 2 – CI/CD et tests automatisés
 
