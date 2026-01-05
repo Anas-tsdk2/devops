@@ -1,5 +1,7 @@
 # quiz-app
 
+test
+
 ![CI](https://github.com/InesR91/projet-devops/actions/workflows/ci.yml/badge.svg)
 
 # Phase 1 –  Initialisation et déploiement de l’application
